@@ -49,7 +49,7 @@ class QuantumClientConfiguration(Configuration):  # pylint: disable=too-many-ins
         subscription_id: str,
         resource_group_name: str,
         workspace_name: str,
-        credential: "TokenCredential" | "AzureKeyCredential",
+        credential: "TokenCredential" or "AzureKeyCredential",
         **kwargs: Any
     ) -> None:
         super(QuantumClientConfiguration, self).__init__(**kwargs)

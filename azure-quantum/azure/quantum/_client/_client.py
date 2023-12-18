@@ -65,7 +65,7 @@ class QuantumClient:  # pylint: disable=client-accepts-api-version-keyword
         subscription_id: str,
         resource_group_name: str,
         workspace_name: str,
-        credential: "TokenCredential" | "AzureKeyCredential",
+        credential: "TokenCredential" or "AzureKeyCredential",
         *,
         endpoint: str = "https://quantum.azure.com",
         **kwargs: Any
