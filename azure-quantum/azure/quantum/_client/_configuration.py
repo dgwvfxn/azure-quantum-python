@@ -21,7 +21,7 @@ else:
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials import TokenCredential, AzureKeyCredential
 
 
 class QuantumClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
@@ -49,7 +49,7 @@ class QuantumClientConfiguration(Configuration):  # pylint: disable=too-many-ins
         subscription_id: str,
         resource_group_name: str,
         workspace_name: str,
-        credential: "TokenCredential",
+        credential: "TokenCredential" | "AzureKeyCredential",
         **kwargs: Any
     ) -> None:
         super(QuantumClientConfiguration, self).__init__(**kwargs)

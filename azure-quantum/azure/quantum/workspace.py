@@ -112,7 +112,7 @@ class Workspace:
     :param credential:
         The credential to use to connect to Azure services.
         Normally one of the credential types from Azure.Identity (https://docs.microsoft.com/python/api/overview/azure/identity-readme?view=azure-python#credential-classes).
-
+        Or azure api key credential (https://learn.microsoft.com/en-us/python/api/azure-core/azure.core.credentials.azurekeycredential?view=azure-python)
         Defaults to \"DefaultAzureCredential\", which will attempt multiple 
         forms of authentication.
 
@@ -204,6 +204,18 @@ class Workspace:
             user_agent=self.user_agent
         )
         return client
+    
+    @classmethod
+    def _parse_connection_string(cls, connection_string): ...
+        # The connection string may look like this:
+        #SubscriptionId=<subId>;ResourceGroupName=<resourceGroupName>;WorkspaceName=<workspaceName>;
+        #WorkspaceKey=<workspacekey>;QuantumEndpoint=https://<location>.quantum.azure.com; 
+
+    @classmethod
+    def from_connection_string(cls, connection_string, **kwargs):
+        subscription_id, resource_group, name, location, credential = cls._parse_connection_string(connection_string)
+    
+        return cls(subscription_id, resource_group, name, None, None, location, credential, None, **kwargs)
 
     @property
     def user_agent(self):

@@ -26,7 +26,7 @@ from .operations import (
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials import TokenCredential, AzureKeyCredential
 
 
 class QuantumClient:  # pylint: disable=client-accepts-api-version-keyword
@@ -52,7 +52,7 @@ class QuantumClient:  # pylint: disable=client-accepts-api-version-keyword
     :param workspace_name: Name of the workspace. Required.
     :type workspace_name: str
     :param credential: Credential needed for the client to connect to Azure. Required.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials.TokenCredential or ~azure.core.credentials.AzureKeyCredential
     :keyword endpoint: Service URL. Default value is "https://quantum.azure.com".
     :paramtype endpoint: str
     :keyword api_version: Api Version. Default value is "2022-09-12-preview". Note that overriding
@@ -65,7 +65,7 @@ class QuantumClient:  # pylint: disable=client-accepts-api-version-keyword
         subscription_id: str,
         resource_group_name: str,
         workspace_name: str,
-        credential: "TokenCredential",
+        credential: "TokenCredential" | "AzureKeyCredential",
         *,
         endpoint: str = "https://quantum.azure.com",
         **kwargs: Any
