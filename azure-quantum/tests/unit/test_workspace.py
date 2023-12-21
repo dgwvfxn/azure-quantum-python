@@ -10,6 +10,7 @@ import pytest
 import os
 from azure.quantum import Workspace
 from azure.quantum.workspace import USER_AGENT_APPID_ENV_VAR_NAME
+from azure.core.credentials import AzureKeyCredential
 from common import QuantumTestBase
 
 class TestWorkspace(QuantumTestBase):
@@ -84,6 +85,21 @@ class TestWorkspace(QuantumTestBase):
 
         with pytest.raises(ValueError):
             Workspace(storage=storage)
+
+    def test_create_workspace_from_connection_string(self):
+        sub_id = "20a9c7dd-f2cb-4d6e-8d32-d2d4d58cabd1"
+        rg_name = "myRG"
+        ws_name = "testWorkSpace123"
+        ws_key = "test12345key"
+        location = "eastus"
+        connection_string = f"SubscriptionId={sub_id};ResourceGroupName={rg_name};WorkspaceName={ws_name};WorkspaceKey={ws_key};QuantumEndpoint=https://{location}.quantum.azure.com;"
+        ws = Workspace.from_connection_string(connection_string)
+
+        self.assertEqual(ws.subscription_id, sub_id)
+        self.assertEqual(ws.resource_group, rg_name)
+        self.assertEqual(ws.name, ws_name)
+        self.assertEqual(ws.credentials, AzureKeyCredential(ws_key))
+        self.assertEqual(ws.location, location)
 
     @pytest.mark.ionq
     @pytest.mark.live_test

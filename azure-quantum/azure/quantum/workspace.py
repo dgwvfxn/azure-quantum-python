@@ -12,6 +12,7 @@ from typing import Any, Dict, Iterable, List, Optional, TYPE_CHECKING, Tuple, Un
 # Temporarily replacing the DefaultAzureCredential with
 # a custom _DefaultAzureCredential
 #   from azure.identity import DefaultAzureCredential
+from azure.core.credentials import AzureKeyCredential
 from azure.quantum._authentication import _DefaultAzureCredential
 
 from azure.quantum._client import QuantumClient
@@ -206,16 +207,34 @@ class Workspace:
         return client
     
     @classmethod
-    def _parse_connection_string(cls, connection_string): ...
-        # The connection string may look like this:
+    def _parse_connection_string(cls, connection_string: str):
+        # The connection string looks like:
         #SubscriptionId=<subId>;ResourceGroupName=<resourceGroupName>;WorkspaceName=<workspaceName>;
         #WorkspaceKey=<workspacekey>;QuantumEndpoint=https://<location>.quantum.azure.com; 
+        regex = r"^SubscriptionId=([a-fA-F0-9-]*);ResourceGroupName=([^\s/]*);WorkspaceName=([^\s/]*);WorkspaceKey=([^\s/]*);QuantumEndpoint=https://([^\s/]*).quantum.azure.com;$"
+        match = re.search(regex, connection_string, re.IGNORECASE)
+        if match:
+            # match should contain four groups:
+            # -> match.group(0):
+            # The full resource ID for the Azure Quantum workspace
+            # -> match.group(1): The Azure subscription ID
+            # -> match.group(2): The Azure resource group name
+            # -> match.group(3): The Azure Quantum workspace name
+            subscription_id = match.group(1)
+            resource_group = match.group(2)
+            workspace_name = match.group(3)
+            workspace_key = match.group(4)
+            location = match.group(5)
+
+            return subscription_id, resource_group, workspace_name, location, workspace_key
+        
+        raise Exception("Invalid connection string")
 
     @classmethod
     def from_connection_string(cls, connection_string, **kwargs):
-        subscription_id, resource_group, name, location, credential = cls._parse_connection_string(connection_string)
+        subscription_id, resource_group, workspace_name, location, credential = cls._parse_connection_string(connection_string)
     
-        return cls(subscription_id, resource_group, name, None, None, location, credential, None, **kwargs)
+        return cls(subscription_id, resource_group, workspace_name, None, None, location, AzureKeyCredential(credential), None, **kwargs)
 
     @property
     def user_agent(self):
