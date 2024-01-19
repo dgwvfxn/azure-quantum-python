@@ -23,14 +23,14 @@ from azure.quantum._client.operations import (
     SessionsOperations,
     TopLevelItemsOperations
 )
-from azure.quantum._client.models import BlobDetails, JobStatus
+from azure.quantum._client.operations import BlobDetails, JobStatus
 from azure.quantum import Job, Session
 from azure.quantum.storage import create_container_using_client, get_container_uri, ContainerClient
 
 from .version import __version__
 
 if TYPE_CHECKING:
-    from azure.quantum._client.models import TargetStatus
+    from azure.quantum._client.operations import TargetStatus
     from azure.quantum.target import Target
 
 logger = logging.getLogger(__name__)

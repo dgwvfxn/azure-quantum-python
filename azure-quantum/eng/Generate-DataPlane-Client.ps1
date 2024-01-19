@@ -44,7 +44,7 @@ if ([string]::IsNullOrEmpty($PackageVersion)) {
     $VersionFilePath = Join-Path $PSScriptRoot "../azure/quantum/version.py"
     if (Test-Path $VersionFilePath) {
         $VersionFileContent = Get-Content -Path $VersionFilePath
-        $PackageVersion = [regex]::Match($VersionFileContent, '__version__\s*=\s*"(?<version>[^"]+)"').Groups["version"]?.Value
+        $PackageVersion = [regex]::Match($VersionFileContent, '__version__\s*=\s*"(?<version>[^"]+)"').Groups["version"].Value
     }
 }
 if ([string]::IsNullOrEmpty($PackageVersion)) {
@@ -60,9 +60,13 @@ if (Test-Path $OutputFolder) {
     Remove-Item $OutputFolder -Recurse | Write-Verbose
 }
 
-$AutoRestConfig = $SwaggerRepoUrl.StartsWith("https://") `
-                    ? "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md" `
-                    : "$SwaggerRepoUrl/specification/quantum/data-plane/readme.md"
+#if($SwaggerRepoUrl.StartsWith("https://")){
+#    $AutoRestConfig = "$SwaggerRepoUrl/blob/$SwaggerRepoBranch/specification/quantum/data-plane/readme.md"
+#}else{
+#    $AutoRestConfig = "$SwaggerRepoUrl/specification/quantum/data-plane/readme.md"
+#}
+
+$AutoRestConfig = "./quantum/data-plane/readme.md"
 
 Write-Verbose "Installing latest AutoRest client"
 npm install -g autorest@latest | Write-Verbose
@@ -77,6 +81,7 @@ if ([string]::IsNullOrEmpty($SwaggerTagVersion))
         --python-mode=pythonSdk `
         --output-folder=$OutputFolder `
         --package-version=$PackageVersion `
+        --add-credential=AzureKeyCredential `
         | Write-Verbose
 }
 else
@@ -89,5 +94,6 @@ else
         --tag=$SwaggerTagVersion `
         --output-folder=$OutputFolder `
         --package-version=$PackageVersion `
+        --add-credential=AzureKeyCredential `
         | Write-Verbose
 }
