@@ -18,7 +18,7 @@ print("Verifying access to DFT target.")
 target = workspace.get_targets("microsoft.dft")
 
 # Next, we create a dictionary variable to specify the parameters for the DFT calculation. 
-dft_input_params = {"tasks":[{"taskType":"spe","basisSet":{"name":"def2-svp","cartesian":False},"xcFunctional":{"name":"m06-2x","gridLevel":4},"scf":{"method":"rks","maxSteps":100,"convergeThreshold":1e-8}}]}
+dft_input_params = {"tasks":[{"taskType":"spf","basisSet":{"name":"def2-svp","cartesian":False},"xcFunctional":{"name":"m06-2x","gridLevel":4},"scf":{"method":"rks","maxSteps":100,"convergeThreshold":1e-8}}]}
 
 # We are now ready to submit the Job using the target.submit call. It takes three parameters-
 # 1. The input molecule in xyz format.
